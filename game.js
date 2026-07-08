@@ -5,14 +5,15 @@ const vaults = [
   { name: "Diamond Vault", hp: 90000 },
   { name: "Fort Knox", hp: 150000 },
   { name: "Alien Vault", hp: 250000 },
-  { name: "Secret Core", hp: 400000 }
+  { name: "Secret Core", hp: 400000 },
+  { name: "Space Vault", hp: 650000 }
 ];
 
 const drops = [
-  { rarity: "COMMON DROP", icon: "💰", name: "Cash Stack", chance: 60 },
-  { rarity: "RARE DROP", icon: "🪙", name: "Gold Coins", chance: 25 },
-  { rarity: "EPIC DROP", icon: "👑", name: "Royal Crown", chance: 10 },
-  { rarity: "LEGENDARY DROP", icon: "💎", name: "Diamond Core", chance: 4 },
+  { rarity: "COMMON DROP", icon: "💰", name: "Cash Stack", chance: 58 },
+  { rarity: "RARE DROP", icon: "🪙", name: "Gold Rain", chance: 25 },
+  { rarity: "EPIC DROP", icon: "👑", name: "Royal Crown", chance: 11 },
+  { rarity: "LEGENDARY DROP", icon: "💎", name: "Diamond Core", chance: 5 },
   { rarity: "MYTHIC DROP", icon: "🐉", name: "Dragon Egg", chance: 1 }
 ];
 
@@ -21,6 +22,7 @@ let vaultIndex = 0;
 let maxHp = 0;
 let hp = 0;
 let damageByUser = {};
+let currentKing = "";
 let combo = 0;
 let comboTimer = null;
 let locked = false;
@@ -29,14 +31,18 @@ const $ = (id) => document.getElementById(id);
 
 function startVault() {
   const v = vaults[vaultIndex % vaults.length];
-  maxHp = Math.round(v.hp * (1 + (level - 1) * 0.35));
+  maxHp = Math.round(v.hp * (1 + (level - 1) * 0.38));
   hp = maxHp;
   locked = false;
+  damageByUser = {};
+  currentKing = "";
 
-  $("vaultTitle").textContent = v.name;
+  $("vaultName").textContent = v.name.toUpperCase();
   $("levelLabel").textContent = `LEVEL ${level} • ${v.name}`;
-  $("lastHit").textContent = "Astept primul cadou...";
+  $("lastHit").textContent = "Trimite un cadou si loveste seiful";
   $("combo").textContent = "";
+  $("kingName").textContent = "Asteptam primul atac";
+  $("kingDamage").textContent = "0 damage";
   $("vault").className = "vault";
 
   updateHp();
@@ -56,12 +62,25 @@ function updateHp() {
 function receiveGift(giftName, coinValue, username) {
   if (locked) return;
 
-  const damage = Math.max(100, Number(coinValue || 1) * 100);
+  const user = username || "Anonim";
+  const coins = Number(coinValue || 1);
+  const damage = Math.max(100, coins * 100);
+
   hp = Math.max(0, hp - damage);
-  damageByUser[username] = (damageByUser[username] || 0) + damage;
+  damageByUser[user] = (damageByUser[user] || 0) + damage;
 
-  $("lastHit").textContent = `💥 ${username} a lovit cu ${giftName}  -${damage.toLocaleString("ro-RO")} HP`;
+  $("lastHit").textContent = `💥 ${user} • ${giftName} • -${damage.toLocaleString("ro-RO")} HP`;
 
+  updateCombo();
+  hitEffects(damage);
+  updateHp();
+  updateTopDamage();
+  updateKing();
+
+  if (hp <= 0) openVault();
+}
+
+function updateCombo() {
   combo++;
   $("combo").textContent = combo >= 2 ? `COMBO x${combo}` : "";
   clearTimeout(comboTimer);
@@ -69,24 +88,38 @@ function receiveGift(giftName, coinValue, username) {
     combo = 0;
     $("combo").textContent = "";
   }, 4500);
+}
 
-  hitEffects(damage);
-  updateHp();
-  updateTopDamage();
+function updateKing() {
+  const [name, dmg] = getMvp();
+  if (!name || name === "Nimeni") return;
 
-  if (hp <= 0) openVault();
+  if (name !== currentKing) {
+    currentKing = name;
+    showNewKing();
+  }
+
+  $("kingName").textContent = name;
+  $("kingDamage").textContent = `${Number(dmg).toLocaleString("ro-RO")} damage`;
+}
+
+function showNewKing() {
+  const el = $("newKing");
+  el.classList.remove("hidden");
+  setTimeout(() => el.classList.add("hidden"), 900);
 }
 
 function hitEffects(damage) {
   const vault = $("vault");
   vault.classList.add("hit");
+
   if (damage >= 5000) {
     vault.classList.add("big-hit");
     $("app").classList.add("screen-shake");
   }
 
   floatDamage(`-${damage.toLocaleString("ro-RO")}`);
-  particles(damage >= 5000 ? 80 : 28);
+  particles(damage >= 5000 ? 90 : 32);
 
   setTimeout(() => vault.classList.remove("hit"), 180);
   setTimeout(() => vault.classList.remove("big-hit"), 520);
@@ -106,16 +139,18 @@ function particles(count) {
     const p = document.createElement("div");
     p.className = "particle";
     p.style.left = (50 + Math.random() * 18 - 9) + "vw";
-    p.style.top = (45 + Math.random() * 16 - 8) + "vh";
+    p.style.top = (44 + Math.random() * 16 - 8) + "vh";
     p.style.setProperty("--x", (Math.random() * 520 - 260) + "px");
-    p.style.setProperty("--y", (Math.random() * 360 - 180) + "px");
+    p.style.setProperty("--y", (Math.random() * 380 - 190) + "px");
+    if (Math.random() > .72) p.style.background = "#00eaff";
+    if (Math.random() > .86) p.style.background = "#ff2f7d";
     document.body.appendChild(p);
     setTimeout(() => p.remove(), 950);
   }
 }
 
 function moneyRain() {
-  for (let i = 0; i < 70; i++) {
+  for (let i = 0; i < 80; i++) {
     const m = document.createElement("div");
     m.className = "money";
     m.textContent = Math.random() > .5 ? "💸" : "💰";
@@ -130,7 +165,9 @@ function updateTopDamage() {
   const sorted = Object.entries(damageByUser).sort((a, b) => b[1] - a[1]).slice(0, 5);
   const medals = ["🥇", "🥈", "🥉", "4.", "5."];
   $("topDamage").innerHTML = sorted.length
-    ? sorted.map(([name, dmg], i) => `<div class="damage-row"><span>${medals[i]} ${name}</span><b>${dmg.toLocaleString("ro-RO")}</b></div>`).join("")
+    ? sorted.map(([name, dmg], i) =>
+        `<div class="damage-row"><span>${medals[i]} ${escapeHtml(name)}</span><b>${Number(dmg).toLocaleString("ro-RO")}</b></div>`
+      ).join("")
     : `<div class="damage-row"><span>🥇 Asteptam primul atac</span><b>0</b></div>`;
 }
 
@@ -152,7 +189,7 @@ function randomDrop() {
 function openVault() {
   locked = true;
   $("app").classList.add("screen-shake");
-  particles(130);
+  particles(150);
   moneyRain();
 
   const [mvp, dmg] = getMvp();
@@ -161,8 +198,8 @@ function openVault() {
   $("dropRarity").textContent = drop.rarity;
   $("dropIcon").textContent = drop.icon;
   $("dropName").textContent = drop.name;
-  $("mvpName").textContent = `MVP DAMAGE: ${mvp}`;
-  $("mvpDamage").textContent = `Total damage: ${Number(dmg).toLocaleString("ro-RO")}`;
+  $("mvpName").textContent = mvp;
+  $("mvpDamage").textContent = `${Number(dmg).toLocaleString("ro-RO")} damage`;
   $("resultPanel").classList.remove("hidden");
 
   let countdown = 8;
@@ -181,8 +218,6 @@ function openVault() {
 }
 
 function nextVault() {
-  damageByUser = {};
-  combo = 0;
   vaultIndex++;
   if (vaultIndex >= vaults.length) {
     vaultIndex = 0;
@@ -201,6 +236,16 @@ function resetGame() {
 
 function simulateGift(giftName, coinValue, username) {
   receiveGift(giftName, coinValue, username);
+}
+
+function escapeHtml(str) {
+  return String(str).replace(/[&<>"']/g, s => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#039;"
+  }[s]));
 }
 
 window.receiveGift = receiveGift;

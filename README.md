@@ -1,12 +1,19 @@
-# Break The Vault
+# Break The Vault Mobile Final
 
-Joc TikTok LIVE pentru cadouri.
+Versiune optimizata pentru TikTok LIVE vertical, format mobil 9:16.
+
+Fisiere:
+- index.html
+- style.css
+- game.js
 
 Publicare:
-1. Incarca fisierele in repository.
-2. GitHub Pages trebuie sa fie activ pe branch main, folder root.
-3. Link: https://dragoshelu.github.io/safebreak/
+1. Incarca cele 3 fisiere in repository-ul GitHub Pages.
+2. Inlocuieste fisierele vechi.
+3. Commit changes.
+4. Deschide: https://dragoshelu.github.io/safebreak/
 
 Test:
 - Butoanele din stanga jos simuleaza cadouri.
-- Integrare viitoare TikTok: apeleaza `receiveGift(giftName, coinValue, username)`.
+- In productie, integrarea trebuie sa apeleze:
+  receiveGift(giftName, coinValue, username)

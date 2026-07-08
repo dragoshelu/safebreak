@@ -2,68 +2,89 @@
 <html lang="ro">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Break The Vault</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Break The Vault Mobile</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <main id="app">
-    <section class="hud top-left">
-      <div class="logo">BREAK THE VAULT</div>
+    <div class="bg-grid"></div>
+    <div class="ambient a1"></div>
+    <div class="ambient a2"></div>
+
+    <header class="header">
+      <div class="eyebrow">LIVE GIFT GAME</div>
+      <div class="title">BREAK THE VAULT</div>
       <div id="levelLabel" class="level">LEVEL 1 • Iron Safe</div>
+    </header>
+
+    <section class="king-card">
+      <div class="king-label">👑 VAULT KING</div>
+      <div id="kingName" class="king-name">Asteptam primul atac</div>
+      <div id="kingDamage" class="king-damage">0 damage</div>
     </section>
 
-    <section class="hud top-right">
-      <h3>🏆 Top damage</h3>
-      <div id="topDamage"></div>
-    </section>
-
-    <section class="center">
-      <div id="vaultTitle" class="vault-title">Iron Safe</div>
+    <section class="vault-zone">
+      <div id="vaultName" class="vault-name">IRON SAFE</div>
 
       <div id="vault" class="vault">
+        <div class="halo"></div>
+        <div class="core-glow"></div>
         <div id="cracks" class="cracks"></div>
-        <div class="vault-door">
-          <div class="dial"></div>
-          <div class="handle"></div>
-          <div class="bolt b1"></div>
-          <div class="bolt b2"></div>
-          <div class="bolt b3"></div>
-          <div class="bolt b4"></div>
+        <div class="door">
+          <div class="shine"></div>
+          <span class="bolt b1"></span>
+          <span class="bolt b2"></span>
+          <span class="bolt b3"></span>
+          <span class="bolt b4"></span>
+          <div class="dial">
+            <span></span>
+          </div>
+          <div class="lock-light"></div>
         </div>
       </div>
 
-      <div class="hp-wrap">
+      <div class="hp-shell">
         <div id="hpBar" class="hp-bar"></div>
       </div>
       <div id="hpText" class="hp-text">10.000 / 10.000 HP</div>
 
-      <div id="lastHit" class="last-hit">Astept primul cadou...</div>
+      <div id="lastHit" class="last-hit">Trimite un cadou si loveste seiful</div>
       <div id="combo" class="combo"></div>
     </section>
 
-    <section class="rules">
-      🌹 Rose = 100 damage • 🎁 Cadou = valoare × 100 damage<br>
-      Sparge seiful, descopera loot-ul si treci la urmatorul nivel.
+    <section class="top-card">
+      <div class="card-title">🏆 TOP DAMAGE</div>
+      <div id="topDamage" class="damage-list"></div>
     </section>
 
-    <section id="resultPanel" class="result-panel hidden">
+    <section class="rules">
+      🌹 Rose = 100 dmg<br>
+      🎁 Cadou = valoare × 100 dmg
+    </section>
+
+    <section id="resultPanel" class="result hidden">
       <div class="result-card">
+        <div class="result-top">VAULT OPENED</div>
         <div id="dropRarity" class="rarity">LEGENDARY DROP</div>
         <div id="dropIcon" class="drop-icon">💎</div>
         <div id="dropName" class="drop-name">Diamond Core</div>
-        <div id="mvpName" class="mvp-name">MVP: Alex</div>
-        <div id="mvpDamage" class="mvp-damage">Damage: 12.300</div>
+        <div class="mvp-box">
+          <div>MVP DAMAGE</div>
+          <strong id="mvpName">Alex</strong>
+          <span id="mvpDamage">12.300 damage</span>
+        </div>
         <div id="nextVault" class="next-vault">Next vault in 8...</div>
       </div>
     </section>
 
+    <div id="newKing" class="new-king hidden">⚡ NEW KING</div>
     <div id="particles"></div>
 
     <div class="test-controls">
       <button onclick="simulateGift('Rose', 1, 'Alex')">Rose</button>
-      <button onclick="simulateGift('Finger Heart', 5, 'Mihai')">5 coins</button>
-      <button onclick="simulateGift('Galaxy', 100, 'Andrei')">100 coins</button>
+      <button onclick="simulateGift('Heart', 5, 'Mihai')">5</button>
+      <button onclick="simulateGift('Galaxy', 100, 'Andrei')">100</button>
       <button onclick="resetGame()">Reset</button>
     </div>
   </main>
