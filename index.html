@@ -1,71 +1,73 @@
 <!doctype html>
 <html lang="ro">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Break The Vault</title>
-<style>
-*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#05060b;color:#fff;font-family:Arial,Helvetica,sans-serif}
-body{background:radial-gradient(circle at 50% 40%,rgba(70,110,255,.24),transparent 30%),radial-gradient(circle at 50% 74%,rgba(255,160,0,.16),transparent 26%),linear-gradient(180deg,#070814,#020308 72%)}
-.game{width:100vw;height:100vh;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px}
-.topbar{position:absolute;top:28px;left:34px;right:34px;display:flex;justify-content:space-between;align-items:flex-start;z-index:5}
-.brand{font-weight:900;font-size:42px;letter-spacing:2px;text-shadow:0 0 22px rgba(255,0,80,.65)}
-.round{margin-top:7px;font-size:22px;opacity:.8}
-.topDonors{width:260px;padding:16px 18px;border-radius:18px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);box-shadow:0 20px 60px rgba(0,0,0,.35);backdrop-filter:blur(8px)}
-.topDonors h3{margin:0 0 10px;font-size:20px;color:#ffd76b}
-.donor{display:flex;justify-content:space-between;padding:6px 0;font-size:17px;border-bottom:1px solid rgba(255,255,255,.08)}.donor:last-child{border-bottom:0}
-.stage{width:min(82vw,780px);max-height:82vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px}
-.layerName{font-size:34px;font-weight:900;letter-spacing:1px;text-shadow:0 0 18px rgba(0,190,255,.8)}
-.vaultWrap{width:360px;height:360px;position:relative;display:grid;place-items:center;margin:4px 0 6px}
-.glow{position:absolute;inset:12px;border-radius:50%;background:radial-gradient(circle,rgba(0,217,255,.24),transparent 64%);filter:blur(10px);animation:breathe 2.6s infinite ease-in-out}@keyframes breathe{50%{transform:scale(1.08);opacity:.75}}
-.vault{width:260px;height:260px;border-radius:34px;position:relative;background:linear-gradient(145deg,#727a8d 0%,#202636 45%,#0d111c 100%);border:9px solid #aeb5c5;box-shadow:0 35px 90px rgba(0,0,0,.72),inset 0 0 28px rgba(255,255,255,.15),0 0 44px rgba(0,185,255,.3);transition:transform .08s ease,filter .12s ease}
-.vault.hit{transform:translateX(-10px) rotate(-3deg) scale(1.02);filter:brightness(1.35)}.vault.bigHit{animation:bigHit .45s ease}
-@keyframes bigHit{0%{transform:scale(1) rotate(0)}25%{transform:scale(1.1) rotate(4deg)}50%{transform:scale(.96) rotate(-5deg)}75%{transform:scale(1.06) rotate(3deg)}100%{transform:scale(1) rotate(0)}}
-.door{position:absolute;inset:24px;border-radius:26px;background:radial-gradient(circle at 45% 38%,rgba(255,255,255,.22),transparent 18%),linear-gradient(145deg,#252b3a,#0a0d15);border:6px solid #c3c8d4}
-.dial{position:absolute;width:96px;height:96px;left:50%;top:50%;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,#f7f7fb 0 12%,#7f8798 13% 48%,#272c38 49% 100%);border:8px solid #0b0d12;box-shadow:0 0 18px rgba(255,255,255,.18)}
-.dial:after{content:"";position:absolute;width:88px;height:12px;border-radius:99px;background:#f4f6ff;left:50%;top:50%;transform:translate(-50%,-50%) rotate(32deg);box-shadow:0 0 12px rgba(255,255,255,.55)}
-.bolt{position:absolute;width:18px;height:18px;border-radius:50%;background:#d4d8e2;box-shadow:inset 0 0 6px #5d6474}.b1{left:42px;top:42px}.b2{right:42px;top:42px}.b3{left:42px;bottom:42px}.b4{right:42px;bottom:42px}
-.hpBox{width:min(82vw,700px);height:42px;border-radius:24px;padding:4px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.26);box-shadow:0 12px 42px rgba(0,0,0,.45);overflow:hidden}
-.hp{height:100%;width:100%;border-radius:21px;background:linear-gradient(90deg,#ff1744,#ff9100,#fff000);transition:width .28s ease;position:relative}.hp:after{content:"";position:absolute;inset:0;background:linear-gradient(120deg,transparent 0 40%,rgba(255,255,255,.45) 48%,transparent 58% 100%);transform:translateX(-100%);animation:shine 1.7s infinite}@keyframes shine{to{transform:translateX(120%)}}
-.hpText{font-size:30px;font-weight:900;text-shadow:0 0 14px rgba(255,180,0,.45)}
-.layerList{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:8px}.pill{padding:9px 13px;border-radius:99px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);font-size:16px;opacity:.55}.pill.active{opacity:1;background:rgba(0,200,255,.18);border-color:rgba(0,200,255,.55);box-shadow:0 0 22px rgba(0,200,255,.25)}
-.lastAttack{margin-top:4px;font-size:24px;height:34px;color:#ffd76b;font-weight:800}
-.rules{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);width:min(88vw,720px);text-align:center;padding:14px 20px;border-radius:18px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);font-size:20px;line-height:1.35;backdrop-filter:blur(8px)}
-.floatDamage{position:absolute;left:50%;top:42%;transform:translate(-50%,-50%);font-size:48px;font-weight:900;color:#ffeb3b;text-shadow:0 0 18px rgba(255,0,0,.65);animation:floatUp 1s forwards ease-out;pointer-events:none;z-index:10}@keyframes floatUp{0%{opacity:0;transform:translate(-50%,-40%) scale(.7)}20%{opacity:1}100%{opacity:0;transform:translate(-50%,-145%) scale(1.2)}}
-.overlayMsg{position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:30;background:rgba(0,0,0,.68);text-align:center;font-size:64px;font-weight:900;letter-spacing:2px;text-shadow:0 0 30px rgba(255,40,80,1)}.overlayMsg.show{display:flex;animation:msgPulse .7s infinite alternate}@keyframes msgPulse{to{transform:scale(1.04)}}
-.particle{position:fixed;width:8px;height:8px;border-radius:50%;background:#ffd76b;pointer-events:none;z-index:20;animation:particle .8s ease-out forwards}@keyframes particle{to{opacity:0;transform:translate(var(--x),var(--y)) scale(.1)}}
-.money{position:fixed;top:-60px;font-size:36px;z-index:40;animation:fall 3.4s linear forwards}@keyframes fall{to{transform:translateY(110vh) rotate(720deg);opacity:.1}}
-.controls{position:fixed;left:14px;bottom:14px;z-index:50;display:flex;gap:8px;opacity:.1;transition:.2s}.controls:hover{opacity:1}button{border:0;border-radius:12px;padding:10px 13px;font-weight:900;cursor:pointer}
-.screenShake{animation:shake .38s linear}@keyframes shake{0%,100%{transform:translate(0,0)}20%{transform:translate(-10px,6px)}40%{transform:translate(9px,-5px)}60%{transform:translate(-7px,-4px)}80%{transform:translate(8px,5px)}}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Break The Vault</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div id="game" class="game">
-  <div class="topbar"><div><div class="brand">BREAK THE VAULT</div><div id="round" class="round">LEVEL 1</div></div><div class="topDonors"><h3>🏆 Top donatori</h3><div class="donor"><span>🥇 Alex</span><b>0</b></div><div class="donor"><span>🥈 Mihai</span><b>0</b></div><div class="donor"><span>🥉 Andrei</span><b>0</b></div></div></div>
-  <div class="stage"><div id="layerName" class="layerName">🔒 SHIELD</div><div class="vaultWrap"><div class="glow"></div><div id="vault" class="vault"><div class="door"></div><div class="dial"></div><span class="bolt b1"></span><span class="bolt b2"></span><span class="bolt b3"></span><span class="bolt b4"></span></div></div><div class="hpBox"><div id="hp" class="hp"></div></div><div id="hpText" class="hpText">5.000 / 5.000 HP</div><div id="lastAttack" class="lastAttack">Așteaptă primul atac...</div><div id="layerList" class="layerList"></div></div>
-  <div class="rules">🌹 Rose = 100 damage &nbsp; | &nbsp; 🎁 Cadou = valoare × 100 damage<br>Sparge cele 5 straturi și deschide seiful final.</div>
-</div>
-<div id="message" class="overlayMsg"></div>
-<div class="controls"><button onclick="gift('Rose',1,'Alex')">Rose</button><button onclick="gift('Finger Heart',5,'Mihai')">5 coins</button><button onclick="gift('Big Gift',50,'Andrei')">50 coins</button><button onclick="resetAll()">Reset</button></div>
-<script>
-const layersBase=[{name:'🔒 SHIELD',hp:5000},{name:'🛡 STEEL',hp:10000},{name:'⚙ TITANIUM',hp:20000},{name:'🏦 VAULT DOOR',hp:40000},{name:'💎 DIAMOND CORE',hp:80000}];
-let level=1,layerIndex=0,maxHp=5000,hp=5000,donors={Alex:0,Mihai:0,Andrei:0};
-function scaleHp(base){return Math.round(base*(1+(level-1)*0.35))}
-function initLayer(){maxHp=scaleHp(layersBase[layerIndex].hp);hp=maxHp;document.getElementById('layerName').textContent=layersBase[layerIndex].name;document.getElementById('round').textContent='LEVEL '+level;renderLayerList();update()}
-function renderLayerList(){const box=document.getElementById('layerList');box.innerHTML='';layersBase.forEach((l,i)=>{const d=document.createElement('div');d.className='pill'+(i===layerIndex?' active':'');d.textContent=l.name;box.appendChild(d)})}
-function update(){document.getElementById('hp').style.width=Math.max(0,hp/maxHp*100)+'%';document.getElementById('hpText').textContent=hp.toLocaleString('ro-RO')+' / '+maxHp.toLocaleString('ro-RO')+' HP'}
-function gift(name,coins,user){const dmg=Math.max(100,coins*100);donors[user]=(donors[user]||0)+dmg;hp=Math.max(0,hp-dmg);document.getElementById('lastAttack').textContent='💥 '+user+' a lovit cu '+name+'  -'+dmg.toLocaleString('ro-RO')+' HP';hitEffect(dmg);updateDonors();update();if(hp<=0)destroyLayer()}
-function hitEffect(dmg){const vault=document.getElementById('vault');vault.classList.add('hit');if(dmg>=3000){vault.classList.add('bigHit');document.getElementById('game').classList.add('screenShake')}setTimeout(()=>vault.classList.remove('hit'),120);setTimeout(()=>vault.classList.remove('bigHit'),480);setTimeout(()=>document.getElementById('game').classList.remove('screenShake'),420);floatDamage('-'+dmg.toLocaleString('ro-RO'));particles(dmg>=3000?60:24)}
-function floatDamage(text){const d=document.createElement('div');d.className='floatDamage';d.textContent=text;document.body.appendChild(d);setTimeout(()=>d.remove(),1000)}
-function particles(count){for(let i=0;i<count;i++){const p=document.createElement('div');p.className='particle';p.style.left=(50+(Math.random()*18-9))+'vw';p.style.top=(45+(Math.random()*16-8))+'vh';p.style.setProperty('--x',(Math.random()*420-210)+'px');p.style.setProperty('--y',(Math.random()*300-150)+'px');document.body.appendChild(p);setTimeout(()=>p.remove(),850)}}
-function destroyLayer(){const current=layersBase[layerIndex].name.replace(/[^\w\s]/g,'').trim();showMessage(current+'<br>DESTROYED');setTimeout(()=>{layerIndex++;if(layerIndex>=layersBase.length){openVault()}else{initLayer();document.getElementById('lastAttack').textContent='Strat nou activat. Sparge-l!'}},2600)}
-function openVault(){showMessage('💎 VAULT OPENED 💎');moneyRain();setTimeout(()=>{level++;layerIndex=0;initLayer();document.getElementById('lastAttack').textContent='Level nou. HP crescut.'},5200)}
-function showMessage(html){const msg=document.getElementById('message');msg.innerHTML=html;msg.classList.add('show');document.getElementById('game').classList.add('screenShake');particles(90);setTimeout(()=>{msg.classList.remove('show');document.getElementById('game').classList.remove('screenShake')},2400)}
-function moneyRain(){for(let i=0;i<60;i++){const m=document.createElement('div');m.className='money';m.textContent=Math.random()>.5?'💸':'💰';m.style.left=Math.random()*100+'vw';m.style.animationDelay=Math.random()*1.2+'s';document.body.appendChild(m);setTimeout(()=>m.remove(),4700)}}
-function updateDonors(){const sorted=Object.entries(donors).sort((a,b)=>b[1]-a[1]).slice(0,3);document.querySelectorAll('.donor').forEach((el,i)=>{const medals=['🥇','🥈','🥉'];const item=sorted[i]||['-',0];el.children[0].textContent=medals[i]+' '+item[0];el.children[1].textContent=item[1].toLocaleString('ro-RO')})}
-function resetAll(){level=1;layerIndex=0;donors={Alex:0,Mihai:0,Andrei:0};updateDonors();initLayer();document.getElementById('lastAttack').textContent='Reset complet.'}
-initLayer();
-// Pentru integrarea TikTok, apelăm: gift(giftName, coinValue, username)
-</script>
+  <main id="app">
+    <section class="hud top-left">
+      <div class="logo">BREAK THE VAULT</div>
+      <div id="levelLabel" class="level">LEVEL 1 • Iron Safe</div>
+    </section>
+
+    <section class="hud top-right">
+      <h3>🏆 Top damage</h3>
+      <div id="topDamage"></div>
+    </section>
+
+    <section class="center">
+      <div id="vaultTitle" class="vault-title">Iron Safe</div>
+
+      <div id="vault" class="vault">
+        <div id="cracks" class="cracks"></div>
+        <div class="vault-door">
+          <div class="dial"></div>
+          <div class="handle"></div>
+          <div class="bolt b1"></div>
+          <div class="bolt b2"></div>
+          <div class="bolt b3"></div>
+          <div class="bolt b4"></div>
+        </div>
+      </div>
+
+      <div class="hp-wrap">
+        <div id="hpBar" class="hp-bar"></div>
+      </div>
+      <div id="hpText" class="hp-text">10.000 / 10.000 HP</div>
+
+      <div id="lastHit" class="last-hit">Astept primul cadou...</div>
+      <div id="combo" class="combo"></div>
+    </section>
+
+    <section class="rules">
+      🌹 Rose = 100 damage • 🎁 Cadou = valoare × 100 damage<br>
+      Sparge seiful, descopera loot-ul si treci la urmatorul nivel.
+    </section>
+
+    <section id="resultPanel" class="result-panel hidden">
+      <div class="result-card">
+        <div id="dropRarity" class="rarity">LEGENDARY DROP</div>
+        <div id="dropIcon" class="drop-icon">💎</div>
+        <div id="dropName" class="drop-name">Diamond Core</div>
+        <div id="mvpName" class="mvp-name">MVP: Alex</div>
+        <div id="mvpDamage" class="mvp-damage">Damage: 12.300</div>
+        <div id="nextVault" class="next-vault">Next vault in 8...</div>
+      </div>
+    </section>
+
+    <div id="particles"></div>
+
+    <div class="test-controls">
+      <button onclick="simulateGift('Rose', 1, 'Alex')">Rose</button>
+      <button onclick="simulateGift('Finger Heart', 5, 'Mihai')">5 coins</button>
+      <button onclick="simulateGift('Galaxy', 100, 'Andrei')">100 coins</button>
+      <button onclick="resetGame()">Reset</button>
+    </div>
+  </main>
+
+  <script src="game.js"></script>
 </body>
 </html>
